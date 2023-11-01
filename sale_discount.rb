@@ -40,27 +40,28 @@ class SaleDiscount
   def print_user_table(order_hash)  
     order_hash.each do |k,v|
       if @price_table.has_key? k
-        original_unit_price = @price_table[k][:unit_price]
         @final_user_order[k] = {}
         if @price_table[k].has_key? :sale_price
           sale_unit = @price_table[k][:sale_price][:unit]
           sale_price = @price_table[k][:sale_price][:price]
           if v >=  sale_unit
-            add_sale_price(k, v, sale_unit, sale_price, original_unit_price)      
+            add_sale_price(k, v, sale_unit, sale_price)      
           end
         else
-          add_unit_sale_price(k, v, original_unit_price)
+          add_unit_sale_price(k, v)
         end
       end  
     end
-    print_me()
+    print_me
   end
   
-  def  add_unit_sale_price(k, v, original_unit_price)
+  def  add_unit_sale_price(k, v)
+    original_unit_price = @price_table[k][:unit_price]
     @final_user_order[k][v] = v * original_unit_price
   end
   
-  def add_sale_price(k, v, sale_unit, sale_price, original_unit_price)
+  def add_sale_price(k, v, sale_unit, sale_price)
+    original_unit_price = @price_table[k][:unit_price]
     actual_unit = v / sale_unit
     if v % sale_unit == 0
       @final_user_order[k][v] = actual_unit * sale_price
