@@ -1,5 +1,4 @@
 class SaleDiscount
-
   def initialize
     @price_table = {
       milk:  {
@@ -7,7 +6,6 @@ class SaleDiscount
         sale_price: {
           unit: 2,
           price: 5
-          
         }
       },
       bread:  {
@@ -15,7 +13,6 @@ class SaleDiscount
         sale_price: {
           unit: 3,
           price: 6
-          
         }
       },
       banana:  {
@@ -29,7 +26,6 @@ class SaleDiscount
         sale_price: {
           unit: 3,
           price: 6
-          
         }
       }
     }
@@ -72,7 +68,6 @@ class SaleDiscount
     @discount += ( (v * original_unit_price) - @final_user_order[k][v])
   end
   
-  
   def print_me()
     allv = @final_user_order.values
     sum = 0
@@ -93,17 +88,11 @@ class SaleDiscount
     print_user_table(user_order_hash)
   end
   
-  
   def make_a_user_order_hash(user_list)
     user_list.split(',').group_by{ |w| w }.map{ |k, v| [k.to_sym, v.count] }.to_h
   end
-  
-  
-
 end
 
 
 sale_discount = SaleDiscount.new
 sale_discount.get_user_list
-
-
