@@ -33,47 +33,52 @@ class SaleDiscount
         }
       }
     }
+    @final_user_order = {}
+    @discount = 0
   end
   
-  def print_user_table(order_hash)
-    final_user_order = {}
-    discount = 0
+  def print_user_table(order_hash)  
     order_hash.each do |k,v|
       if @price_table.has_key? k
         original_unit_price = @price_table[k][:unit_price]
-        final_user_order[k] = {}
+        @final_user_order[k] = {}
         if @price_table[k].has_key? :sale_price
           sale_unit = @price_table[k][:sale_price][:unit]
           sale_price = @price_table[k][:sale_price][:price]
           if v >=  sale_unit
-            actual_unit = v / sale_unit
-            if v % sale_unit == 0
-              final_user_order[k][v] = actual_unit * sale_price
-            else
-              final_user_order[k][v] = actual_unit * sale_price
-              final_user_order[k][v] = final_user_order[k][v] + ((v % sale_unit ) * original_unit_price)   
-            end
-            discount += ( (v * original_unit_price) - final_user_order[k][v])
+            add_sale_price(k, v, sale_unit, sale_price, original_unit_price)      
           end
         else
-            final_user_order[k][v] = v * original_unit_price
+          add_unit_sale_price(k, v, original_unit_price)
         end
       end  
     end
-    final_user_order
-    allv = final_user_order.values
-    sum = 0
-    allv.each  { |k,v| sum += k.values.sum }
-    print_me(final_user_order , sum, discount)
+    print_me()
+  end
+  
+  def  add_unit_sale_price(k, v, original_unit_price)
+    @final_user_order[k][v] = v * original_unit_price
+  end
+  
+  def add_sale_price(k, v, sale_unit, sale_price, original_unit_price)
+    actual_unit = v / sale_unit
+    if v % sale_unit == 0
+      @final_user_order[k][v] = actual_unit * sale_price
+    else
+      @final_user_order[k][v] = actual_unit * sale_price
+      @final_user_order[k][v] = @final_user_order[k][v] + ((v % sale_unit ) * original_unit_price)   
+    end
+    @discount += ( (v * original_unit_price) - @final_user_order[k][v])
   end
   
   
-  
-  
-  def print_me(final_order, sum, discount)
+  def print_me()
+    allv = @final_user_order.values
+    sum = 0
+    allv.each  { |k,v| sum += k.values.sum }
     p "Your total order is #{sum}"
-    p "your total discount is #{discount}"
-    p "your final order is #{final_order}"
+    p "your total discount is #{@discount}"
+    p "your final order is #{@final_user_order}"
   end
 
   def get_user_list
@@ -99,6 +104,5 @@ end
 
 sale_discount = SaleDiscount.new
 sale_discount.get_user_list
-
 
 
